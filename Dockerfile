@@ -3,7 +3,7 @@ FROM centos:7
 
 RUN yum install -y epel-release && \
     yum install -y centos-release-scl && \
-    yum install -y openssh-clients rh-maven35 java-11-openjdk-devel java-1.8.0-openjdk-devel
+    yum install -y git openssh-clients rh-maven35 java-11-openjdk-devel java-1.8.0-openjdk-devel
 
 RUN echo "export JAVA_11=$(alternatives --display java | grep 'family java-11-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
     echo "export JAVAC_11=$(alternatives --display javac | grep 'family java-11-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
