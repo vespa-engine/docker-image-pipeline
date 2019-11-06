@@ -6,15 +6,10 @@ ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 RUN yum install -y epel-release && \
     yum install -y centos-release-scl && \
-    yum install -y which git openssh-clients java-11-openjdk-devel java-1.8.0-openjdk-devel && \
+    yum install -y which git openssh-clients java-11-openjdk-devel && \
     yum clean all --enablerepo='*'
 
-RUN echo "export JAVA_11=$(alternatives --display java | grep 'family java-11-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
-    echo "export JAVAC_11=$(alternatives --display javac | grep 'family java-11-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
-    echo "export JAVA_11_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/profile.d/jdk-env.sh && \
-    echo "export JAVA_8=$(alternatives --display java | grep 'family java-1.8.0-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
-    echo "export JAVAC_8=$(alternatives --display javac | grep 'family java-1.8.0-openjdk' | cut -d' ' -f1)" >> /etc/profile.d/jdk-env.sh && \
-    echo "export JAVA_8_HOME=/usr/lib/jvm/java-1.8.0-openjdk" >> /etc/profile.d/jdk-env.sh
+RUN echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/profile.d/jdk-env.sh
 
 # Maven 3.6 required
 RUN curl -sLf -o - http://apache.uib.no/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz | tar -C /usr/lib -zxf -
