@@ -12,7 +12,7 @@ RUN yum install -y epel-release && \
 RUN echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/profile.d/jdk-env.sh
 
 # Maven 3.6 required
-RUN curl -sLf -o - "http://apache.uib.no/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz" | tar -C /usr/lib -zxf -
+RUN curl -sLf -o - "https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz" | tar -C /usr/lib -zxf -
 ENV M2_HOME="/usr/lib/apache-maven-3.6.1"
 ENV PATH="${M2_HOME}/bin:${PATH}"
 
