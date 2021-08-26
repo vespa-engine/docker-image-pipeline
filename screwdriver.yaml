@@ -1,0 +1,50 @@
+# Copyright Verizon Media. Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root.
+jobs:
+  publish:
+    requires: [~pr, ~commit]
+    image: vespaengine/vespa-build-centos7:latest
+    secrets:
+      - DOCKER_HUB_DEPLOY_KEY
+
+    annotations:
+      screwdriver.cd/cpu: HIGH
+      screwdriver.cd/ram: HIGH
+      screwdriver.cd/disk: HIGH
+      screwdriver.cd/timeout: 30
+      screwdriver.cd/dockerEnabled: true
+      screwdriver.cd/dockerCpu: TURBO
+      screwdriver.cd/dockerRam: TURBO
+
+    environment:
+      USER_SHELL_BIN: bash
+      DOCKER_HOST: 'localhost:2375'
+
+    steps:
+      - inspect: |
+          set -x
+          env | grep -v TOKEN
+          cat /proc/cpuinfo
+          cat /proc/meminfo
+          df -h
+          uname -a
+
+      - install-deps: |
+          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+          yum install -y docker-ce docker-ce-cli containerd.io
+          docker system info
+
+      - build: |
+          docker build --tag docker.io/vespaengine/pipeline:latest .
+
+      - publish: |
+          if [[ -z $SD_PULL_REQUEST ]]; then
+            set +x
+            docker login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY"
+            set -x
+
+            docker push docker.io/vespaengine/pipeline:latest
+          fi
+
+      - teardown-inspect: |
+          docker image ls
+          df -h
