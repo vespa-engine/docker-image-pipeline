@@ -17,6 +17,6 @@ ENV M2_HOME="/usr/lib/apache-maven-3.6.1"
 ENV PATH="${M2_HOME}/bin:${PATH}"
 
 # Install vespa-cli
-ENV VESPA_CLI_VERSION="7.469.18"
+ENV VESPA_CLI_VERSION=$(curl -fsSL https://api.github.com/repos/vespa-engine/vespa/releases/latest | grep -Po '"tag_name": "v\K.*?(?=")')
 RUN curl -fsSL https://github.com/vespa-engine/vespa/releases/download/v${VESPA_CLI_VERSION}/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64.tar.gz | tar -zxf - -C /opt
 RUN ln -sf /opt/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64/bin/vespa /usr/local/bin/
