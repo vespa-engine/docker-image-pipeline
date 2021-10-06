@@ -32,8 +32,11 @@ jobs:
           yum install -y docker-ce docker-ce-cli containerd.io
           docker system info
 
+      - get-latest-version: |
+          VESPA_CLI_VERSION=$(curl -fsSL https://api.github.com/repos/vespa-engine/vespa/releases/latest | grep -Po '"tag_name": "v\K.*?(?=")')
+
       - build: |
-          docker build --tag docker.io/vespaengine/pipeline:latest .
+          docker build --tag docker.io/vespaengine/pipeline:latest --build-arg VESPA_CLI_VERSION .
 
       - publish: |
           if [[ -z $SD_PULL_REQUEST ]]; then
