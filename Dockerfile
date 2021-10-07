@@ -4,9 +4,6 @@ FROM centos:7
 # Java requires proper locale for unicode
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
-# Provide this at build time using --build-arg VESPA_CLI_VERSION
-ARG VESPA_CLI_VERSION
-
 RUN yum install -y epel-release && \
     yum install -y centos-release-scl && \
     yum install -y which git openssh-clients java-11-openjdk-devel zip && \
@@ -20,5 +17,6 @@ ENV M2_HOME="/usr/lib/apache-maven-3.6.1"
 ENV PATH="${M2_HOME}/bin:${PATH}"
 
 # Install vespa-cli
-RUN curl -fsSL https://github.com/vespa-engine/vespa/releases/download/v${VESPA_CLI_VERSION}/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64.tar.gz | tar -zxf - -C /opt
-RUN ln -sf /opt/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64/bin/vespa /usr/local/bin/
+RUN VESPA_CLI_VERSION=$(curl -fsSL https://api.github.com/repos/vespa-engine/vespa/releases/latest | grep -Po '"tag_name": "v\K.*?(?=")') && \
+    curl -fsSL https://github.com/vespa-engine/vespa/releases/download/v${VESPA_CLI_VERSION}/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64.tar.gz | tar -zxf - -C /opt && \
+    ln -sf /opt/vespa-cli_${VESPA_CLI_VERSION}_linux_amd64/bin/vespa /usr/local/bin/
