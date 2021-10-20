@@ -9,4 +9,4 @@ The project is covered by the [Apache License, Version 2.0](https://www.apache.o
 Docker image with supported versions of Maven and JDK for Vespa application compilation. This image can be used in automated CI pipelines to build and deploy Vespa applications. 
 
 This image can be pulled from Docker hub by issuing this command:
-`$ docker pull vespaengine/vespa-pipeline` 
+`$ docker pull vespaengine/pipeline`
