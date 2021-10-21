@@ -33,7 +33,7 @@ jobs:
           docker system info
 
       - build: |
-          docker build --tag docker.io/vespaengine/pipeline:latest .
+          docker build --tag docker.io/vespaengine/vespa-pipeline:latest .
 
       - publish: |
           if [[ -z $SD_PULL_REQUEST ]]; then
@@ -41,7 +41,7 @@ jobs:
             docker login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY"
             set -x
 
-            docker push docker.io/vespaengine/pipeline:latest
+            docker push docker.io/vespaengine/vespa-pipeline:latest
           fi
 
       - teardown-inspect: |
