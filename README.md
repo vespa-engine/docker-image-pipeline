@@ -6,7 +6,9 @@ Read more at the Vespa project [homepage](http://docs.vespa.ai).
 The project is covered by the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 #### Minimal image for Vespa application compilation
-Docker image with supported versions of Maven and JDK for Vespa application compilation. This image can be used in automated CI pipelines to build and deploy Vespa applications. 
+Docker image with supported versions of Maven and JDK for Vespa application compilation. The image
+also comes with [vespa-cli](https://docs.vespa.ai/en/vespa-cli.html) which can be used to deploy applications with.
+This image can be used in automated CI pipelines to build and deploy Vespa applications. 
 
 This image can be pulled from Docker hub by issuing this command:
 `$ docker pull vespaengine/vespa-pipeline` 
