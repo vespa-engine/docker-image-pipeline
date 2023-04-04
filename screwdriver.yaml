@@ -2,7 +2,7 @@
 jobs:
   publish:
     requires: [~pr, ~commit]
-    image: vespaengine/vespa-build-centos7:latest
+    image: docker.io/almalinux:9
     secrets:
       - DOCKER_HUB_DEPLOY_KEY
 
@@ -11,12 +11,11 @@ jobs:
       screwdriver.cd/ram: HIGH
       screwdriver.cd/disk: HIGH
       screwdriver.cd/timeout: 30
-      screwdriver.cd/dockerEnabled: true
-      screwdriver.cd/dockerCpu: TURBO
-      screwdriver.cd/dockerRam: TURBO
 
     environment:
       USER_SHELL_BIN: bash
+      CONTAINER_IMAGE: "docker.io/vespaengine/vespa-pipeline"
+      CONTAINER_TAG: "latest"
 
     steps:
       - inspect: |
@@ -28,20 +27,33 @@ jobs:
           uname -a
 
       - install-deps: |
-          yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-          yum install -y docker-ce docker-ce-cli containerd.io
-          docker system info
-
+          dnf install -y podman podman-docker buildah skopeo
+          # Default to host network
+          sed -i 's,.*netns.*=.*private.*,netns = "host",' /usr/share/containers/containers.conf
+          # To avoid warning messages from podman-docker
+          touch /etc/containers/nodocker
+          # Install the multi-arch support
+          podman run --rm --cap-add SYS_ADMIN docker.io/multiarch/qemu-user-static --reset -p yes
       - build: |
-          docker build --tag docker.io/vespaengine/vespa-pipeline:latest .
+          buildah bud \
+            --file Dockerfile \
+            --jobs 2  \
+            --label "source_repo=$GIT_URL" \
+            --label "source_ref=$GIT_COMMIT" \
+            --label "build_url=$SD_BUILD_URL" \
+            --layers=false \
+            --manifest "$CONTAINER_IMAGE:$CONTAINER_TAG" \
+            --platform linux/amd64,linux/arm64
+
+          buildah manifest inspect "$CONTAINER_IMAGE:$CONTAINER_TAG"
 
       - publish: |
           if [[ -z $SD_PULL_REQUEST ]]; then
             set +x
-            docker login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY"
+            buildah login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY"
             set -x
 
-            docker push docker.io/vespaengine/vespa-pipeline:latest
+            buildah manifest push --all --format v2s2 "$CONTAINER_IMAGE:$CONTAINER_TAG" "docker://$CONTAINER_IMAGE:$CONTAINER_TAG"
           fi
 
       - teardown-inspect: |
