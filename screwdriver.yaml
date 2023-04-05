@@ -50,7 +50,7 @@ jobs:
       - publish: |
           if [[ -z $SD_PULL_REQUEST ]]; then
             set +x
-            buildah login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY"
+            buildah login --username aressem --password "$DOCKER_HUB_DEPLOY_KEY" docker.io
             set -x
 
             buildah manifest push --all --format v2s2 "$CONTAINER_IMAGE:$CONTAINER_TAG" "docker://$CONTAINER_IMAGE:$CONTAINER_TAG"
