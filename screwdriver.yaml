@@ -15,6 +15,9 @@ jobs:
       screwdriver.cd/ram: HIGH
       screwdriver.cd/disk: HIGH
       screwdriver.cd/timeout: 30
+      screwdriver.cd/dockerEnabled: true
+      screwdriver.cd/dockerCpu: TURBO
+      screwdriver.cd/dockerRam: TURBO
 
     environment:
       USER_SHELL_BIN: bash
