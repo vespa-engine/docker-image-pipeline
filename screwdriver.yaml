@@ -31,6 +31,7 @@ jobs:
           uname -a
 
       - install-deps: |
+          dnf install -y dnf-plugins-core
           dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
           dnf install -y --allowerasing docker-ce-cli
 
